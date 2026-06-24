@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-    res.send('Version 2 deployed via GitHub Actions');
+    res.send('Version 3 deployed via GitHub Actions');
 });
 
 app.listen(3000, () => {
