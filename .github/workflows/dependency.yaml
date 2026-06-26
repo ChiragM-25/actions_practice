@@ -1,4 +1,4 @@
-name: Build Matrix Workflow
+name: Dependency Workflow
 
 on:
   workflow_dispatch:
