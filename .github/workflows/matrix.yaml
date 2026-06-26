@@ -2,14 +2,24 @@ name: Build Matrix Workflow
 
 on:
   workflow_dispatch:
+    inputs:
+      runner-type:
+        description: 'Select the type of runner to use for the build'
+        required: true
+        type: choice
+        default: 'ubuntu-latest'
+        options:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
 
 jobs:
   job1:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.runner-type }}
 
     strategy:
       matrix:
-        version: [18, 20]
+        version: [22, 24]
     
     steps:
       - name: Install Node.js
@@ -17,13 +27,5 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
 
-  job2:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Display OS
-        run: echo "Running on ${{ matrix.os }}"
+      - name: Display Node.js Version
+        run: node -v
