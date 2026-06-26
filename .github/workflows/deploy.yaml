@@ -1,14 +1,12 @@
 name: Deploy Docker App
 
 on:
-  push:
-    branches:
-      - main
-  
-  workflow_dispatch:
-
-  # schedule:
-  #   - cron: '1 10-18 * * 1-5' # Runs every hour from 10 AM to 6 PM, Monday to Friday
+  # push:
+  #   branches:
+  #     - main
+ 
+  schedule:
+    - cron: '0 14-18 * * 1-5' # Runs every hour from 2 PM to 6 PM, Monday to Friday
     
 env:
   AWS_REGION: ap-south-1

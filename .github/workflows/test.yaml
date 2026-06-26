@@ -1,0 +1,35 @@
+name: Test Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'test'
+        options:
+          - test
+          - pre-prod
+          - prod
+        
+      version:
+        description: 'Deployment Version'
+        required: true
+        default: "v1.2.3"
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Inputs
+        run: |
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Version: ${{ github.event.inputs.version }}"
+
+      - name: Environment Variables
+        run: |
+          echo "AWS_REGION: ${{ env.AWS_REGION }}"
+          echo "GITHUB_SHA: ${{ github.sha }}"
