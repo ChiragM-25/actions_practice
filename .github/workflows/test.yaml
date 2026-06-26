@@ -6,16 +6,17 @@ on:
       environment:
         description: 'Deployment Environment'
         required: true
+        type: choice
         default: 'test'
         options:
           - test
           - pre-prod
           - prod
         
-      # version:
-      #   description: 'Deployment Version'
-      #   required: true
-      #   default: "v1.2.3"
+      version:
+        description: 'Deployment Version'
+        required: true
+        default: "v1.2.3"
 
 env:
   AWS_REGION: ap-south-1
