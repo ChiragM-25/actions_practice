@@ -1,0 +1,44 @@
+name: jobs to run
+
+on:
+  workflow_dispatch:
+    inputs:
+      job-to-run:
+        description: 'Select the job to run'
+        required: true
+        default: 'job1'
+        type: choice
+        options:
+          - job1
+          - job2
+          - job3
+          - all
+
+jobs:
+  job1:
+    if: ${{ github.event.inputs.job-to-run == 'job1' || github.event.inputs.job-to-run == 'all' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: job1
+        run: sleep 5
+
+  job2:
+    if: ${{ github.event.inputs.job-to-run == 'job2' || github.event.inputs.job-to-run == 'all' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: job2
+        run: sleep 5
+
+      # - name: error
+      #   run: exit 1
+
+  job3:
+    if: ${{ github.event.inputs.job-to-run == 'job3' || github.event.inputs.job-to-run == 'all' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: job3
+        run: sleep 5
