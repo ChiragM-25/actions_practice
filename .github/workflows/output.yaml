@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      message: ${{ steps.step2.outputs.msg }}
+      message: ${{ steps.step2.outputs.message }}
 
     steps:
       - name: Create Output
@@ -17,7 +17,6 @@ jobs:
 
       - name: Get Output from Step1
         run: echo "The output from step1 ====> ${{ steps.step1.outputs.msg }}"
-
 
       - name: Create Output for Job2
         id: step2
