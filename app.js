@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
 
 <div class="card">
 
-<h1>🚀 DevOps Demo Application</h1>
+<h1>🚀 DevOps Application Deployed on EKS from GitHub Actions</h1>
 
 <table>
 
