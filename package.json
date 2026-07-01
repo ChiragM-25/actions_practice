@@ -1,15 +1,13 @@
 {
-  "name": "github-actions-ec2-demo",
+  "name": "devops-demo-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "DevOps Demo Application",
+  "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "node app.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^4.19.2"
   }
 }
