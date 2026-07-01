@@ -113,87 +113,58 @@ jobs:
 
       - name: Build Docker Image
         run: |
+      
           docker build \
-            -t ${{ steps.image.outputs.image_uri }} .
+            -t ${{ steps.image.outputs.image_uri }} \
+            -t ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest \
+            .
 
-      - name: Push Docker Image
+      - name: Push Docker Images
         run: |
+      
           docker push ${{ steps.image.outputs.image_uri }}
+      
+          docker push ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
+
 
 ############################################################
 # DEPLOY
 ############################################################
 
   deploy:
-    name: Deploy to EC2
+
+    name: Deploy to EKS
+  
     runs-on: ubuntu-latest
-
+  
     needs: docker
-
-    env:
-      APP_NAME: devops-demo
-      APP_ENV: development
-      HOST_PORT: 3000
-      CONTAINER_PORT: 3000
-
+  
     steps:
-
-      - name: Deploy Application
-        uses: appleboy/ssh-action@v1.0.3
-
+  
+      - uses: actions/checkout@v4
+  
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+  
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-
-          script: |
-
-            ACCOUNT_ID="${{ env.ACCOUNT_ID }}"
-            AWS_REGION="${{ env.AWS_REGION }}"
-            APP_NAME="${{ env.APP_NAME }}"
-            HOST_PORT="${{ env.HOST_PORT }}"
-            CONTAINER_PORT="${{ env.CONTAINER_PORT }}"
-            IMAGE_URI="${{ needs.docker.outputs.image_uri }}"
-
-            echo "==========================================="
-            echo "Deploying DevOps Demo Application"
-            echo "==========================================="
-            echo "Image        : $IMAGE_URI"
-            echo "Commit       : ${{ github.sha }}"
-            echo "Branch       : ${{ github.ref_name }}"
-            echo "Workflow Run : ${{ github.run_number }}"
-            echo "==========================================="
-
-            aws ecr get-login-password --region $AWS_REGION | \
-            docker login \
-              --username AWS \
-              --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-
-            echo "Pulling latest image..."
-            docker pull $IMAGE_URI
-
-            echo "Stopping old container..."
-            docker stop $APP_NAME || true
-
-            echo "Removing old container..."
-            docker rm $APP_NAME || true
-
-            echo "Starting new container..."
-
-            docker run -d \
-              --name $APP_NAME \
-              -p ${HOST_PORT}:${CONTAINER_PORT} \
-              -e APP_ENV="${{ env.APP_ENV }}" \
-              -e APP_VERSION="${{ github.run_number }}" \
-              -e GIT_COMMIT="${{ github.sha }}" \
-              -e GIT_BRANCH="${{ github.ref_name }}" \
-              -e WORKFLOW_RUN="${{ github.run_number }}" \
-              -e BUILD_TIME="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
-              $IMAGE_URI
-
-            echo "Cleaning unused images..."
-            docker image prune -af
-
-            echo "==========================================="
-            echo "Deployment Completed"
-            echo "==========================================="
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+  
+      - name: Configure kubectl
+        run: |
+  
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name eks-lab-dev
+  
+      - name: Deploy Application
+        run: |
+  
+          kubectl apply -f k8s/
+  
+      - name: Wait for Rollout
+        run: |
+  
+          kubectl rollout status deployment/devops-demo \
+          -n devops-demo

@@ -22,7 +22,7 @@ spec:
 
       - name: devops-demo
 
-        image: IMAGE_PLACEHOLDER
+        image: 464505731561.dkr.ecr.ap-south-1.amazonaws.com/actions-demo:latest
 
         imagePullPolicy: Always
 
