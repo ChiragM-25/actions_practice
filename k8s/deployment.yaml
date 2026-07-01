@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: devops-demo
+  namespace: devops-demo
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: devops-demo
+
+  template:
+    metadata:
+      labels:
+        app: devops-demo
+
+    spec:
+      containers:
+
+      - name: devops-demo
+
+        image: IMAGE_PLACEHOLDER
+
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 3000
+
+        env:
+        - name: APP_ENV
+          value: development
+
+        - name: APP_VERSION
+          value: "1.0.0"
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
