@@ -20,19 +20,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
+      - uses: ./.github/actions/setup-node
 
   ############################################################
   # UNIT TEST
@@ -44,21 +33,11 @@ jobs:
     needs: build
 
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
-
+      - uses: ./.github/actions/setup-node
+    
       - name: Run Tests
         run: |
-          echo "No tests available yet"
+          echo "No tests yet"
 
   ############################################################
   # LINT
@@ -70,19 +49,9 @@ jobs:
     needs: build
 
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Lint
+      - uses: ./.github/actions/setup-node
+    
+      - name: Lint
         run: |
           echo "Lint passed"
 

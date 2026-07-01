@@ -1,0 +1,21 @@
+name: Setup Node Project
+
+description: Checkout repository, setup Node.js and install dependencies
+
+runs:
+  using: composite
+
+  steps:
+
+    - name: Checkout Source
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+
+    - name: Install Dependencies
+      shell: bash
+      run: npm ci
